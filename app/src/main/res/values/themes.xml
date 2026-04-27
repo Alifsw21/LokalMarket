@@ -1,0 +1,11 @@
+<resources>
+    <style name="Theme.LokalMarket" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/orange_primary</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.LokalMarket.Splash" parent="Theme.LokalMarket">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+</resources>
