@@ -7,6 +7,7 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.app.lokalmarket.MainActivity
 import com.app.lokalmarket.databinding.ActivitySplashBinding
+import com.app.lokalmarket.v1.ui.main.LoginActivity
 
 class SplashActivity : AppCompatActivity() {
 
@@ -19,7 +20,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, LoginActivity::class.java))
             finish()
         }, 1500)
     }
