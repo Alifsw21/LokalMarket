@@ -30,7 +30,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Alamat Pengiriman"
+                android:text="@string/address"
                 android:textStyle="bold"
                 android:textColor="#333333"
                 android:layout_marginBottom="8dp"/>
@@ -52,12 +52,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nama Pembeli | 08123456789"
+                        android:text="@string/namaPembeli"
                         android:textStyle="bold"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Jl. RS. Fatmawati Raya, Pd. Labu, Jakarta Selatan, 12450"
+                        android:text="@string/addressDetail"
                         android:layout_marginTop="4dp"
                         android:textColor="#555555"/>
                 </LinearLayout>
@@ -66,7 +66,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ringkasan Pesanan"
+                android:text="@string/ringkasanPesanan"
                 android:textStyle="bold"
                 android:textColor="#333333"
                 android:layout_marginBottom="8dp"/>
@@ -100,14 +100,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Tagihan"
+                android:text="@string/totalHarga"
                 android:textSize="12sp"
                 android:textColor="#777777"/>
             <TextView
                 android:id="@+id/tv_final_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rp 0"
+                android:text="@string/price"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:textColor="#FF9800"/>
@@ -117,7 +117,7 @@
             android:id="@+id/btn_pay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Buat Pesanan"
+            android:text="@string/buatPesanan"
             android:textColor="@android:color/white"
             app:backgroundTint="#FF9800"
             app:cornerRadius="8dp"/>

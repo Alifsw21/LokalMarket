@@ -13,4 +13,18 @@
     <string name="email">Email</string>
     <string name="daftar">Daftar Sekarang</string>
     <string name="logintext">Sudah punya akun? Login di sini</string>
+    <string name="productimg">Gambar Produk</string>
+    <string name="nameProduct">Nama Produk</string>
+    <string name="price">Rp. 500.000</string>
+    <string name="discount">Diskon 10%</string>
+    <string name="seeMore">Lihat Selengkapnya</string>
+    <string name="description">Deskripsi Produk:</string>
+    <string name="descriptionContent">Ini adalah deskripsi lengkap produk lokal berkualitas tinggi yang tersedia di LokalMarket.</string>
+    <string name="checkout">Checkout Sekarang</string>
+    <string name="address">Alamat Pengiriman</string>
+    <string name="namaPembeli">Nama Pembeli</string>
+    <string name="addressDetail">Jl. RS. Fatmawati Raya, Pd. Labu, Jakarta Selatan, 12450</string>
+    <string name="ringkasanPesanan">Ringkasan Pesanan</string>
+    <string name="totalHarga">Total Harga:</string>
+    <string name="buatPesanan">Buat Pesanan</string>
 </resources>
