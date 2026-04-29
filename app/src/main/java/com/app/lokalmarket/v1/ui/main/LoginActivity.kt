@@ -1,5 +1,6 @@
 package com.app.lokalmarket.v1.ui.main
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -26,9 +27,16 @@ class LoginActivity : AppCompatActivity() {
             val password = etPassword.text.toString()
 
             if (username.isNotEmpty() && password.isNotEmpty()) {
+
+                // --- BAGIAN PENYIMPANAN NAMA ---
+                val sharedPref = getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+                val editor = sharedPref.edit()
+                editor.putString("SAVED_NAME", username) // Menyimpan nama inputan user
+                editor.apply()
+                // -------------------------------
+
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
-
                 finish()
             } else {
                 Toast.makeText(this, "Silakan isi username dan password", Toast.LENGTH_SHORT).show()
