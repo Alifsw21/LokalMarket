@@ -1,13 +1,14 @@
 package com.app.lokalmarket
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
-import com.app.lokalmarket.databinding.ActivityMainBinding
-import com.app.lokalmarket.v1.data.ProductRepository
-import com.app.lokalmarket.v1.adapter.ProductAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.app.lokalmarket.v1.adapter.ProductAdapter
+import com.app.lokalmarket.v1.data.ProductRepository
+import com.app.lokalmarket.v1.ui.main.CartActivity
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,5 +24,11 @@ class MainActivity : AppCompatActivity() {
         rvProducts.adapter = adapter
 
         rvProducts.isNestedScrollingEnabled = false
+
+        // Tombol keranjang di toolbar
+        val icCart = findViewById<android.widget.ImageView>(R.id.ic_cart)
+        icCart.setOnClickListener {
+            startActivity(Intent(this, CartActivity::class.java))
+        }
     }
 }
