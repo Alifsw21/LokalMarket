@@ -7,7 +7,6 @@ router.get("/", (req, res) => {
         produk.id,
         produk.nama,
         produk.harga,
-        produk.gambar,
         produk.diskon AS diskon,
         kategori.namaKategori AS kategori
         FROM produk
@@ -37,7 +36,6 @@ router.get("/:id", (req, res) => {
             produk.id,
             produk.nama,
             produk.harga,
-            produk.gambar,
             produk.diskon AS diskon,
             kategori.namaKategori AS kategori
             FROM produk
