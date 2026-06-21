@@ -3,7 +3,16 @@ const router = express.Router();
 const db = require("./db");
 
 router.get("/", (req, res) => {
-    const sql = "SELECT * FROM produk";
+    const sql = `SELECT
+        produk.id,
+        produk.nama,
+        produk.harga,
+        produk.gambar,
+        produk.diskon AS diskon,
+        kategori.namaKategori AS kategori
+        FROM produk
+        LEFT JOIN promo ON produk.idPromo = promo.id
+        LEFT JOIN kategori ON produk.idKategori = kategori.id`;
 
     db.query(sql, (err, result) => {
         if (err) {
@@ -24,7 +33,17 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
     const id = req.params.id;
 
-    const sql = "SELECT * FROM produk WHERE id = ?";
+    const sql = `SELECT
+            produk.id,
+            produk.nama,
+            produk.harga,
+            produk.gambar,
+            produk.diskon AS diskon,
+            kategori.namaKategori AS kategori
+            FROM produk
+            LEFT JOIN promo ON produk.idPromo = promo.id
+            LEFT JOIN kategori ON produk.idKategori = kategori.id
+            WHERE produk.id = ?`;
 
     db.query(sql, [id], (err, result) => {
         if (err) {
