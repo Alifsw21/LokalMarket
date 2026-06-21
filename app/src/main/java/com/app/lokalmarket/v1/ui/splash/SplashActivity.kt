@@ -1,13 +1,12 @@
-package com.app.lokalmarket.ui.main
+package com.app.lokalmarket.v1.ui.splash
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import com.app.lokalmarket.MainActivity
 import com.app.lokalmarket.databinding.ActivitySplashBinding
-import com.app.lokalmarket.v1.ui.main.LoginActivity
+import com.app.lokalmarket.v1.ui.auth.LoginActivity
 
 class SplashActivity : AppCompatActivity() {
 

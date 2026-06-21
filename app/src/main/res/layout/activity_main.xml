@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F6F8"
-    tools:context=".MainActivity">
+    tools:context=".v1.ui.main.MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -125,7 +125,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_product"
+                tools:listitem="@layout/item_produk"
                 tools:itemCount="4"
                 tools:layoutManager="GridLayoutManager"
                 app:spanCount="2" />

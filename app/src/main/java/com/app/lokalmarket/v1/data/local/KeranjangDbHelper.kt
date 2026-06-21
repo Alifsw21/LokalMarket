@@ -29,7 +29,6 @@ class KeranjangDbHelper(context: Context) :
                 $COL_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 $COL_IDPRODUK INTEGER NOT NULL,
                 $COL_NAMA TEXT NOT NULL,
-                $COL_GAMBAR TEXT NOT NULL,
                 $COL_HARGA INTEGER NOT NULL,
                 $COL_JUMLAH INTEGER NOT NULL
             )
@@ -49,7 +48,6 @@ class KeranjangDbHelper(context: Context) :
         val values = ContentValues().apply {
             put(COL_IDPRODUK, keranjang.idProduk)
             put(COL_NAMA, keranjang.namaProduk)
-            put(COL_GAMBAR, keranjang.gambarProduk)
             put(COL_HARGA, keranjang.hargaSatuan)
             put(COL_JUMLAH, keranjang.jumlahBarang)
         }
@@ -75,7 +73,6 @@ class KeranjangDbHelper(context: Context) :
                     id = cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID)),
                     idProduk = cursor.getInt(cursor.getColumnIndexOrThrow(COL_IDPRODUK)),
                     namaProduk = cursor.getString(cursor.getColumnIndexOrThrow(COL_NAMA)),
-                    gambarProduk = cursor.getString(cursor.getColumnIndexOrThrow(COL_GAMBAR)),
                     hargaSatuan = cursor.getInt(cursor.getColumnIndexOrThrow(COL_HARGA)),
                     jumlahBarang = cursor.getInt(cursor.getColumnIndexOrThrow(COL_JUMLAH))
                 )

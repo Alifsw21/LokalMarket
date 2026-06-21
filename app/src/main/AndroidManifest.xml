@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_foreground"
@@ -7,7 +9,7 @@
         android:theme="@style/Theme.LokalMarket">
 
         <activity
-            android:name=".ui.main.SplashActivity"
+            android:name=".v1.ui.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.LokalMarket.Splash">
 
@@ -18,7 +20,7 @@
         </activity>
 
         <activity
-            android:name=".v1.ui.main.LoginActivity"
+            android:name=".v1.ui.auth.LoginActivity"
             android:exported="true">
 
             <intent-filter>
@@ -28,15 +30,15 @@
         </activity>
 
         <activity
-            android:name=".v1.ui.main.RegisterActivity"
+            android:name=".v1.ui.auth.RegisterActivity"
             android:exported="false"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".v1.ui.main.MainActivity"
             android:exported="false" />
 
         <activity
-            android:name=".v1.ui.main.DetailActivity"
+            android:name=".v1.ui.main.DetailProdukActivity"
             android:exported="false"/>
 
         <activity
@@ -44,7 +46,7 @@
             android:exported="false"/>
 
         <activity
-            android:name=".v1.ui.main.CartActivity"
+            android:name=".v1.ui.main.KeranjangFragment"
             android:exported="false"/>
 
     </application>
