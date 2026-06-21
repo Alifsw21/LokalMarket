@@ -21,11 +21,11 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-    const { idPengguna, totalHarga, alamatPengiriman, keranjang } = req.body;
+    const { idPengguna, totalHarga, alamat, keranjang } = req.body;
 
-    const sqlPesanan = "INSERT INTO pesanan (idPengguna, totalHarga, alamatPengiriman) VALUES (?, ?, ?)";
+    const sqlPesanan = "INSERT INTO pesanan (idPengguna, totalHarga, alamat) VALUES (?, ?, ?)";
 
-    db.query(sqlPesanan, [idPengguna, totalHarga, alamatPengiriman], (err, result) => {
+    db.query(sqlPesanan, [idPengguna, totalHarga, alamat], (err, result) => {
         if (err) {
             return res.status(500).json({
                 success: false,
