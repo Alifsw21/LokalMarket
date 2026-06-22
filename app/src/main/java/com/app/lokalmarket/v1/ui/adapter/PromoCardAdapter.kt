@@ -28,7 +28,7 @@ class PromoCardAdapter(
             }
 
             val imageRes = when (promo.id) {
-                1 -> R.drawable.promo1
+                1 -> R.drawable.sample_produk1
                 else -> R.drawable.ic_launcher_background
             }
             binding.ivPromoImage.setImageResource(imageRes)

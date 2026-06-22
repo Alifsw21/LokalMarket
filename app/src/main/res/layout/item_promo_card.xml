@@ -9,61 +9,66 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="12dp">
+        android:layout_height="wrap_content">
 
+        <!-- Gambar Promo -->
         <ImageView
-            android:id="@+id/ivProductImage"
+            android:id="@+id/ivPromoImage"
             android:layout_width="0dp"
-            android:layout_height="140dp"
+            android:layout_height="160dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Label Status -->
         <TextView
-            android:id="@+id/tvDiscount"
+            android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="#F44336"
-            android:paddingHorizontal="6dp"
-            android:paddingVertical="2dp"
+            android:background="#FF5722"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:text="Aktif"
             android:textColor="#FFFFFF"
             android:textSize="12sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Judul Promo -->
         <TextView
-            android:id="@+id/tvProductName"
+            android:id="@+id/tvJudulPromo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="8dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:text="Nama Produk"
-            android:textSize="14sp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:text="Judul Promo Disini"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivProductImage" />
+            app:layout_constraintTop_toBottomOf="@id/ivPromoImage" />
 
+        <!-- Diskon Promo -->
         <TextView
-            android:id="@+id/tvPrice"
+            android:id="@+id/tvDiskonPromo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
+            android:layout_marginStart="12dp"
             android:layout_marginTop="4dp"
-            android:text="Rp 0"
-            android:textColor="#FF9800"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="12dp"
+            android:text="Diskon 0%"
+            android:textColor="#4CAF50"
             android:textSize="14sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvProductName" />
+            app:layout_constraintTop_toBottomOf="@id/tvJudulPromo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

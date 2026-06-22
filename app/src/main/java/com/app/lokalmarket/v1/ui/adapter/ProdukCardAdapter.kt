@@ -26,8 +26,8 @@ class ProdukCardAdapter(
             binding.tvPrice.text = rupiah.format(product.harga)
 
             val imageRes = when (product.id) {
-                1 -> R.drawable.p1
-                2 -> R.drawable.p2
+                1 -> R.drawable.sample_produk1
+                2 -> R.drawable.sample_produk2
                 else -> R.drawable.ic_launcher_background
             }
             binding.ivProductImage.setImageResource(imageRes)

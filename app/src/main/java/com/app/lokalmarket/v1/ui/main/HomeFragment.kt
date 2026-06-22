@@ -28,17 +28,19 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val dummyList = mutableListOf(
-            Produk(1, "Produk 1", "Deskripsi", 15000, null, 0),
-            Produk(2, "Produk 2", "Deskripsi", 25000, null, 10)
+            Produk(1, "Sepatu Anti Mainstream", "sepatu ini sangat bagus dipakai untuk menggapai mimpi yang belum tercapai", 15000000, null, 0),
+            Produk(2, "T-shirt keep going on", "baju ini sangat sejuk dipakai, penggunanya akan merasa seolah berada di surga", 250000, null, 10)
         )
 
         binding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rvProducts.adapter = ProdukCardAdapter(dummyList) { produkTerpilih, imageRes ->
+        binding.rvProducts.adapter = ProdukCardAdapter(items = dummyList) { produkTerpilih, imageRes ->
 
             val intent = Intent(requireContext(), DetailProdukActivity::class.java)
             intent.putExtra("EXTRA_ID", produkTerpilih.id)
             intent.putExtra("EXTRA_NAME", produkTerpilih.namaProduk)
             intent.putExtra("EXTRA_PRICE", produkTerpilih.harga)
+            intent.putExtra("EXTRA_DESC", produkTerpilih.deskripsi)
+            intent.putExtra("EXTRA_IMAGE", imageRes)
             startActivity(intent)
         }
     }

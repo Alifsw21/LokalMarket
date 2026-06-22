@@ -10,6 +10,7 @@ import com.app.lokalmarket.v1.data.model.Keranjang
 import com.app.lokalmarket.v1.ui.main.CheckoutActivity
 import java.text.NumberFormat
 import java.util.Locale
+import com.app.lokalmarket.R
 
 class DetailProdukActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBinding
@@ -25,11 +26,17 @@ class DetailProdukActivity : AppCompatActivity() {
         val productId = intent.getIntExtra("EXTRA_ID", 0)
         val name = intent.getStringExtra("EXTRA_NAME") ?: "Produk"
         val price = intent.getIntExtra("EXTRA_PRICE", 0)
+        val desc = intent.getStringExtra("EXTRA_DESC") ?: "Tidak ada deskripsi tersedia"
+        val imageRes = intent.getIntExtra("EXTRA_IMAGE", R.drawable.sample_produk2)
+
 
         val rupiah = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
 
         binding.tvNameDetail.text = name
         binding.tvPriceDetail.text = rupiah.format(price)
+        binding.tvDeskripsiDetail.text = desc
+        binding.imgDetail.setImageResource(imageRes)
+
 
         binding.toolbarDetail.setNavigationOnClickListener {
             finish()
