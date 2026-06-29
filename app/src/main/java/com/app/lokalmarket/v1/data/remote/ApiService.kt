@@ -56,4 +56,14 @@ interface ApiService {
 
     @GET("pesanan")
     fun getRiwayatPesanan(): Call<ApiResponse<List<Pesanan>>>
+
+    @DELETE("pesanan/{id}")
+    fun hapusPesanan(
+        @Path("id") id: Int
+    ): Call<ApiResponse<Any>>
+
+    @GET("pesanan/{id}")
+    fun getDetailPesanan(
+        @Path("id") id: Int
+    ): Call<ApiResponse<List<DetailPesananResponse>>>
 }

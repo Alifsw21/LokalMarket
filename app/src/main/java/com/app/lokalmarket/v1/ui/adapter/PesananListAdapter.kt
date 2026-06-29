@@ -10,6 +10,7 @@ import java.util.Locale
 
 class PesananListAdapter(
     private val items: MutableList<Pesanan>,
+    private val onItemClick: (Pesanan) -> Unit,
     private val onDeleteClick: (Pesanan) -> Unit
 ) : RecyclerView.Adapter<PesananListAdapter.ViewHolder>() {
 
@@ -20,10 +21,14 @@ class PesananListAdapter(
         private val rupiah = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
 
         fun bind(item: Pesanan) {
-            binding.tvPesananPengguna.text = item.idPengguna.toString()
+            binding.tvPesananPengguna.text = "Pesanan #${item.id}"
             binding.tvTanggalPesanan.text = item.tanggalPesanan
             binding.tvAlamat.text = item.alamat
             binding.tvTotalHarga.text = rupiah.format(item.totalHarga)
+
+            binding.root.setOnClickListener {
+                onItemClick(item)
+            }
 
             binding.btnHapusPesanan.setOnClickListener {
                 onDeleteClick(item)
@@ -50,5 +55,13 @@ class PesananListAdapter(
         items.clear()
         items.addAll(newItems)
         notifyDataSetChanged()
+    }
+    
+    fun removeItem(pesanan: Pesanan) {
+        val index = items.indexOfFirst { it.id == pesanan.id }
+        if (index != -1) {
+            items.removeAt(index)
+            notifyItemRemoved(index)
+        }
     }
 }

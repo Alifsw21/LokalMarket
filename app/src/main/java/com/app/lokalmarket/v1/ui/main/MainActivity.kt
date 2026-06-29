@@ -11,7 +11,6 @@ import com.app.lokalmarket.v1.receiver.NetworkReceiver
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
     private val networkReceiver = NetworkReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,14 +38,17 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    override fun onResume() {
-        super.onResume()
-        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        registerReceiver(networkReceiver, filter)
+    override fun onStart() {
+        super.onStart()
+        val intentFilter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        registerReceiver(networkReceiver, intentFilter)
     }
 
-    override fun onPause() {
-        super.onPause()
-        unregisterReceiver(networkReceiver)
+    override fun onStop() {
+        super.onStop()
+        try {
+            unregisterReceiver(networkReceiver)
+        } catch (e: IllegalArgumentException) {
+        }
     }
 }

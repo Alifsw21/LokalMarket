@@ -46,6 +46,10 @@
             android:name=".v1.ui.main.CheckoutActivity"
             android:exported="false"/>
 
+        <activity
+            android:name=".v1.ui.main.DetailPesananActivity"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

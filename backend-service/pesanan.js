@@ -4,103 +4,53 @@ const db = require("./db");
 
 router.get("/", (req, res) => {
     const sql = "SELECT * FROM pesanan ORDER BY id DESC";
-
     db.query(sql, (err, result) => {
-        if (err) {
-            return res.status(500).json({
-                success: false,
-                message: "Gagal mengambil data pesanan"
-            });
-        } else {
-            return res.status(200).json({
-                success: true,
-                data: result
-            });
-        }
+        if (err) return res.status(500).json({ success: false, message: "Gagal mengambil data pesanan" });
+        res.status(200).json({ success: true, data: result });
+    });
+});
+
+router.get("/:id", (req, res) => {
+    const id = req.params.id;
+    const sql = `SELECT dp.*, IFNULL(p.nama, CONCAT('Produk #', dp.idProduk)) as namaProduk
+                 FROM detail_pesanan dp
+                 LEFT JOIN produk p ON dp.idProduk = p.id
+                 WHERE dp.idPesanan = ?`;
+
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.status(500).json({ success: false, message: "Gagal mengambil detail" });
+        res.status(200).json({ success: true, data: result });
     });
 });
 
 router.post("/", (req, res) => {
     const { idPengguna, totalHarga, alamat, keranjang } = req.body;
-
     const sqlPesanan = "INSERT INTO pesanan (idPengguna, totalHarga, alamat) VALUES (?, ?, ?)";
 
     db.query(sqlPesanan, [idPengguna, totalHarga, alamat], (err, result) => {
-        if (err) {
-            return res.status(500).json({
-                success: false,
-                message: "Gagal membuat pesanan utama"
-            });
-        }
-
+        if (err) return res.status(500).json({ success: false, message: "Gagal simpan pesanan" });
         const idPesananBaru = result.insertId;
 
-        if (!keranjang || keranjang.length === 0) {
-             return res.status(201).json({
-                success: true,
-                message: "Berhasil menambahkan pesanan (tanpa barang)"
-             });
-        }
-
         let detailSelesai = 0;
+        if (!keranjang || keranjang.length === 0) return res.status(201).json({ success: true });
+
         keranjang.forEach((item) => {
             const sqlDetail = "INSERT INTO detail_pesanan (idPesanan, idProduk, jumlahBarang, hargaSatuan) VALUES (?, ?, ?, ?)";
-
-            db.query(sqlDetail, [idPesananBaru, item.idProduk, item.jumlahBarang, item.hargaSatuan], (errDetail) => {
+            db.query(sqlDetail, [idPesananBaru, item.idProduk, item.jumlahBarang, item.hargaSatuan], () => {
                 detailSelesai++;
                 if (detailSelesai === keranjang.length) {
-                    return res.status(201).json({
-                        success: true,
-                        message: "Checkout berhasil! Pesanan tersimpan."
-                    });
+                    res.status(201).json({ success: true, message: "Checkout berhasil!" });
                 }
             });
         });
     });
 });
 
-router.put("/:id/batal", (req, res) => {
-    const id = req.params.id;
-    const sql = "UPDATE pesanan SET statusPesanan = 'Dibatalkan' WHERE id = ?";
-
-    db.query(sql, [id], (err, result) => {
-        if (err) {
-            return res.status(500).json({
-                success: false,
-                message: "Gagal membatalkan pesanan"
-            });
-        } else {
-            return res.status(200).json({
-                success: true,
-                message: "Pesanan berhasil dibatalkan"
-            });
-        }
-    });
-});
-
 router.delete("/:id", (req, res) => {
     const id = req.params.id;
-
-    const sql = "DELETE FROM pesanan WHERE id = ?";
-
-    db.query(sql, [id], (err, result) => {
-        if (err) {
-            return res.status(500).json({
-                success: false,
-                message: "Gagal menghapus pesanan"
-            });
-        }
-        if (result.affectedRows === 0) {
-            return res.status(404).json({
-                success: false,
-                message: "Pesanan tidak ditemukan"
-            });
-        } else {
-            return res.status(200).json({
-                success: true,
-                message: "Berhasil menghapus pesanan"
-            });
-        }
+    db.query("DELETE FROM pesanan WHERE id = ?", [id], (err) => {
+        if (err) return res.status(500).json({ success: false });
+        res.status(200).json({ success: true, message: "Terhapus" });
     });
 });
 

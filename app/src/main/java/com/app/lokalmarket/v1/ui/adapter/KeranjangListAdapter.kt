@@ -1,9 +1,10 @@
 package com.app.lokalmarket.v1.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.app.lokalmarket.R // Pastikan import R sudah benar
+import com.app.lokalmarket.R
 import com.app.lokalmarket.databinding.ItemKeranjangBinding
 import com.app.lokalmarket.v1.data.model.Keranjang
 import java.text.NumberFormat
@@ -11,6 +12,7 @@ import java.util.Locale
 
 class KeranjangListAdapter(
     private val items: MutableList<Keranjang>,
+    private var showDeleteButton: Boolean = true, // Tambahkan parameter ini
     private val onDeleteClick: (Keranjang) -> Unit
 ) : RecyclerView.Adapter<KeranjangListAdapter.ViewHolder>() {
 
@@ -22,15 +24,16 @@ class KeranjangListAdapter(
 
         fun bind(item: Keranjang) {
             binding.tvCartItemName.text = item.namaProduk
-            binding.tvCartItemPrice.text = rupiah.format(item.hargaSatuan)
+            binding.tvCartItemPrice.text = "${rupiah.format(item.hargaSatuan)} x ${item.jumlahBarang}"
 
-            // Logika untuk menampilkan gambar berdasarkan ID produk
             val imageRes = when (item.idProduk) {
                 1 -> R.drawable.sample_produk1
                 2 -> R.drawable.sample_produk2
                 else -> R.drawable.ic_launcher_background
             }
             binding.ivCartItemImage.setImageResource(imageRes)
+
+            binding.btnHapusItem.visibility = if (showDeleteButton) View.VISIBLE else View.GONE
 
             binding.btnHapusItem.setOnClickListener {
                 onDeleteClick(item)
