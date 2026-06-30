@@ -1,18 +1,20 @@
-const mysql = require("mysql2")
+const mysql = require("mysql2");
 
-const connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "db_lokalMarket"
-})
+const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    port: process.env.DB_PORT,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+});
 
-connection.connect((err) => {
+pool.getConnection((err, connection) => {
     if (err) {
-        console.log("Koneksi database gagal")
+        console.error("Koneksi database gagal:", err.message);
     } else {
-        console.log("Koneksi database berhasil")
+        console.log("Koneksi database berhasil");
+        connection.release();
     }
 })
 
-module.exports = connection
+module.exports = pool;

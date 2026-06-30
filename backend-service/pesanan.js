@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
     const id = req.params.id;
     const sql = `SELECT dp.*, IFNULL(p.nama, CONCAT('Produk #', dp.idProduk)) as namaProduk
-                 FROM detail_pesanan dp
+                 FROM detailpesanan dp
                  LEFT JOIN produk p ON dp.idProduk = p.id
                  WHERE dp.idPesanan = ?`;
 
@@ -35,7 +35,7 @@ router.post("/", (req, res) => {
         if (!keranjang || keranjang.length === 0) return res.status(201).json({ success: true });
 
         keranjang.forEach((item) => {
-            const sqlDetail = "INSERT INTO detail_pesanan (idPesanan, idProduk, jumlahBarang, hargaSatuan) VALUES (?, ?, ?, ?)";
+            const sqlDetail = "INSERT INTO detailpesanan (idPesanan, idProduk, jumlahBarang, hargaSatuan) VALUES (?, ?, ?, ?)";
             db.query(sqlDetail, [idPesananBaru, item.idProduk, item.jumlahBarang, item.hargaSatuan], () => {
                 detailSelesai++;
                 if (detailSelesai === keranjang.length) {

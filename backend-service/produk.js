@@ -5,9 +5,9 @@ const db = require("./db");
 router.get("/", (req, res) => {
     const sql = `SELECT
         produk.id,
-        produk.nama,
+        produk.namaProduk,
         produk.harga,
-        produk.diskon AS diskon,
+        promo.diskon AS diskon,
         kategori.namaKategori AS kategori
         FROM produk
         LEFT JOIN promo ON produk.idPromo = promo.id
@@ -34,9 +34,9 @@ router.get("/:id", (req, res) => {
 
     const sql = `SELECT
             produk.id,
-            produk.nama,
+            produk.namaProduk,
             produk.harga,
-            produk.diskon AS diskon,
+            promo.diskon AS diskon,
             kategori.namaKategori AS kategori
             FROM produk
             LEFT JOIN promo ON produk.idPromo = promo.id
