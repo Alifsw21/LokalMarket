@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.lokalmarket.databinding.ActivityCheckoutBinding
 import com.app.lokalmarket.v1.data.local.KeranjangDbHelper
+import com.app.lokalmarket.v1.data.model.Keranjang
 import com.app.lokalmarket.v1.ui.adapter.KeranjangListAdapter
 import com.app.lokalmarket.v1.utils.BroadcastAction
 import java.text.NumberFormat
@@ -31,36 +32,44 @@ class CheckoutActivity : AppCompatActivity() {
         val rupiah = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
         val isFromCart = intent.getBooleanExtra("EXTRA_FROM_CART", false)
 
-        if (isFromCart) {
-            val items = dbHelper.getAllKeranjang()
-
-            val totalHarga = items.sumOf { it.hargaSatuan * it.jumlahBarang }
-
-            binding.tvFinalPrice.text = rupiah.format(totalHarga)
-
-            binding.rvCheckoutItems.layoutManager = LinearLayoutManager(this)
-            binding.rvCheckoutItems.adapter = KeranjangListAdapter(items.toMutableList()) { item ->
-                Toast.makeText(this, "Item dihapus", Toast.LENGTH_SHORT).show()
-            }
-
-            binding.btnPay.setOnClickListener {
-                kirimBroadcastPesanan(buyerName ?: "Pembeli")
-                Toast.makeText(this, "Pesanan untuk $buyerName berhasil dibuat!", Toast.LENGTH_LONG).show()
-
-                dbHelper.clearKeranjang()
-                finish()
-            }
+        val items = if (isFromCart) {
+            dbHelper.getAllKeranjang()
         } else {
+            val productId = intent.getIntExtra("EXTRA_ID", 0)
             val productName = intent.getStringExtra("EXTRA_NAME") ?: "Produk"
             val productPrice = intent.getIntExtra("EXTRA_PRICE", 0)
+            listOf(
+                Keranjang(
+                    idProduk = productId,
+                    namaProduk = productName,
+                    hargaSatuan = productPrice,
+                    jumlahBarang = 1
+                )
+            )
+        }
 
-            binding.tvFinalPrice.text = rupiah.format(productPrice)
+        val totalHarga = items.sumOf { it.hargaSatuan * it.jumlahBarang }
+        binding.tvFinalPrice.text = rupiah.format(totalHarga)
 
-            binding.btnPay.setOnClickListener {
-                kirimBroadcastPesanan(buyerName ?: "Pembeli")
+        binding.rvCheckoutItems.layoutManager = LinearLayoutManager(this)
+        binding.rvCheckoutItems.adapter = KeranjangListAdapter(
+            items = items.toMutableList(),
+            showDeleteButton = false
+        ) {
+            // onItemClick (optional)
+        }
+
+        binding.btnPay.setOnClickListener {
+            kirimBroadcastPesanan(buyerName ?: "Pembeli")
+            
+            if (isFromCart) {
+                Toast.makeText(this, "Pesanan untuk $buyerName berhasil dibuat!", Toast.LENGTH_LONG).show()
+                dbHelper.clearKeranjang()
+            } else {
+                val productName = intent.getStringExtra("EXTRA_NAME") ?: "Produk"
                 Toast.makeText(this, "Pesanan $productName untuk $buyerName Berhasil!", Toast.LENGTH_LONG).show()
-                finish()
             }
+            finish()
         }
 
         binding.toolbarCheckout.setNavigationOnClickListener {
@@ -71,7 +80,6 @@ class CheckoutActivity : AppCompatActivity() {
     private fun kirimBroadcastPesanan(namaPembeli: String) {
         val intentBroadcast = Intent(BroadcastAction.ACTION_TAMBAH_PESANAN)
         intentBroadcast.putExtra("EXTRA_PEMBELI", namaPembeli)
-
         sendBroadcast(intentBroadcast)
     }
 }
