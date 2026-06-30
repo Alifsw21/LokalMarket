@@ -34,6 +34,10 @@ class KeranjangFragment : Fragment() {
 
         dbHelper = KeranjangDbHelper(requireContext())
         loadKeranjang()
+
+        binding.toolbarCart.setNavigationOnClickListener {
+            (activity as? MainActivity)?.navigateToHome()
+        }
     }
 
     override fun onResume() {

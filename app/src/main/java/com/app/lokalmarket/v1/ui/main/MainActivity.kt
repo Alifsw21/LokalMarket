@@ -32,6 +32,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun navigateToHome() {
+        binding.bottomNav.selectedItemId = R.id.nav_home
+    }
+
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)

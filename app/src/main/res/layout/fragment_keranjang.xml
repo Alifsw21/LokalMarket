@@ -12,6 +12,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/white"
         android:elevation="4dp"
+        app:navigationIcon="@drawable/ic_arrow_back"
         app:title="Keranjang Belanja"
         app:titleTextColor="#333333"
         app:layout_constraintTop_toTopOf="parent" />

@@ -61,8 +61,11 @@ class ProdukCardAdapter(
     override fun getItemCount(): Int = items.size
 
     fun updateData(newItems: List<Produk>) {
+        // Ambil snapshot dulu sebelum clear, untuk menghindari kasus newItems
+        // ternyata adalah objek list yang sama dengan items (referensi aliasing)
+        val snapshot = newItems.toList()
         items.clear()
-        items.addAll(newItems)
+        items.addAll(snapshot)
         notifyDataSetChanged()
     }
 }
