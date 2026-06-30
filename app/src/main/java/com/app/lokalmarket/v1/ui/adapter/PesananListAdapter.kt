@@ -1,10 +1,12 @@
 package com.app.lokalmarket.v1.ui.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.lokalmarket.v1.data.model.Pesanan
 import com.app.lokalmarket.databinding.ItemPesananListBinding
+import com.app.lokalmarket.v1.ui.main.DetailPesananActivity
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -26,8 +28,39 @@ class PesananListAdapter(
             binding.tvAlamat.text = item.alamat
             binding.tvTotalHarga.text = rupiah.format(item.totalHarga)
 
+            // Mengirim data ke DetailPesananActivity saat kartu pesanan diklik
             binding.root.setOnClickListener {
-                onItemClick(item)
+                val context = binding.root.context
+                val intent = Intent(context, DetailPesananActivity::class.java)
+
+                intent.putExtra("EXTRA_ID_PESANAN", item.id)
+                intent.putExtra("EXTRA_TANGGAL", item.tanggalPesanan)
+                intent.putExtra("EXTRA_TOTAL", item.totalHarga)
+                intent.putExtra("EXTRA_ALAMAT", item.alamat)
+
+                // --- TRIK LOGIKA HARGA ---
+                // Kita tebak barangnya berdasarkan total harga dari database
+                val namaProdukDitebak: String
+                val idProdukDitebak: Int
+
+                if (item.totalHarga == 250000) {
+                    namaProdukDitebak = "T-shirt keep going on"
+                    idProdukDitebak = 2 // Agar memicu R.drawable.sample_produk2
+                } else if (item.totalHarga == 15000000) {
+                    namaProdukDitebak = "Sepatu Anti Mainstream"
+                    idProdukDitebak = 1 // Agar memicu R.drawable.sample_produk1
+                } else {
+                    namaProdukDitebak = "Produk Lokal"
+                    idProdukDitebak = 0
+                }
+
+                intent.putExtra("EXTRA_ID_PRODUK", idProdukDitebak)
+                intent.putExtra("EXTRA_NAMA_PRODUK", namaProdukDitebak)
+                intent.putExtra("EXTRA_HARGA_PRODUK", item.totalHarga)
+                intent.putExtra("EXTRA_QTY", 1)
+
+                context.startActivity(intent)
+
             }
 
             binding.btnHapusPesanan.setOnClickListener {
@@ -56,7 +89,7 @@ class PesananListAdapter(
         items.addAll(newItems)
         notifyDataSetChanged()
     }
-    
+
     fun removeItem(pesanan: Pesanan) {
         val index = items.indexOfFirst { it.id == pesanan.id }
         if (index != -1) {

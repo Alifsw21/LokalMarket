@@ -1,6 +1,7 @@
 package com.app.lokalmarket.v1.ui.main
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class CheckoutActivity : AppCompatActivity() {
@@ -44,8 +47,10 @@ class CheckoutActivity : AppCompatActivity() {
             binding.tvFinalPrice.text = rupiah.format(totalHarga)
 
             binding.rvCheckoutItems.layoutManager = LinearLayoutManager(this)
-            binding.rvCheckoutItems.adapter = KeranjangListAdapter(items.toMutableList()) { item ->
-                Toast.makeText(this, "Item dihapus", Toast.LENGTH_SHORT).show()
+
+            // Mengirim showDeleteButton = false agar tidak bisa menghapus item di halaman checkout
+            binding.rvCheckoutItems.adapter = KeranjangListAdapter(items.toMutableList(), showDeleteButton = false) {
+                // Kosongkan karena tidak ada aksi hapus
             }
 
             binding.btnPay.setOnClickListener {
@@ -54,10 +59,10 @@ class CheckoutActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
 
-                val details = items.map { 
+                val details = items.map {
                     DetailPesanan(it.idProduk, it.jumlahBarang, it.hargaSatuan)
                 }
-                
+
                 val request = CheckoutRequest(
                     idPengguna = userId,
                     totalHarga = totalHarga,
@@ -65,11 +70,20 @@ class CheckoutActivity : AppCompatActivity() {
                     keranjang = details
                 )
 
-                buatPesanan(request, true)
+                // Mengambil data item pertama untuk diteruskan ke Detail Pesanan
+                val firstItem = items.firstOrNull()
+                val pId = firstItem?.idProduk ?: 1
+                val pName = firstItem?.namaProduk ?: "Produk Lokal"
+                val pPrice = firstItem?.hargaSatuan ?: 0
+                val pQty = firstItem?.jumlahBarang ?: 1
+
+                buatPesanan(request, true, pId, pName, pPrice, pQty)
             }
         } else {
             val productPrice = intent.getIntExtra("EXTRA_PRICE", 0)
             val productId = intent.getIntExtra("EXTRA_ID", 0)
+            val productName = intent.getStringExtra("EXTRA_NAME") ?: "Produk Lokal"
+
             binding.tvFinalPrice.text = rupiah.format(productPrice)
 
             binding.btnPay.setOnClickListener {
@@ -86,7 +100,7 @@ class CheckoutActivity : AppCompatActivity() {
                     keranjang = details
                 )
 
-                buatPesanan(request, false)
+                buatPesanan(request, false, productId, productName, productPrice, 1)
             }
         }
 
@@ -95,7 +109,14 @@ class CheckoutActivity : AppCompatActivity() {
         }
     }
 
-    private fun buatPesanan(request: CheckoutRequest, fromCart: Boolean) {
+    private fun buatPesanan(
+        request: CheckoutRequest,
+        fromCart: Boolean,
+        pId: Int,
+        pName: String,
+        pPrice: Int,
+        pQty: Int
+    ) {
         binding.btnPay.isEnabled = false
         binding.btnPay.text = "Memproses..."
 
@@ -109,6 +130,25 @@ class CheckoutActivity : AppCompatActivity() {
                     if (body?.success == true) {
                         Toast.makeText(this@CheckoutActivity, "Pesanan Berhasil Dibuat!", Toast.LENGTH_LONG).show()
                         if (fromCart) dbHelper.clearKeranjang()
+
+                        // Menjalankan intent untuk pindah ke halaman Detail Pesanan
+                        val intent = Intent(this@CheckoutActivity, DetailPesananActivity::class.java)
+
+                        val dummyOrderId = (100..999).random()
+                        val sdf = SimpleDateFormat("dd MMM yyyy", Locale("id", "ID"))
+                        val currentDate = sdf.format(Date())
+
+                        intent.putExtra("EXTRA_ID_PESANAN", dummyOrderId)
+                        intent.putExtra("EXTRA_TANGGAL", currentDate)
+                        intent.putExtra("EXTRA_TOTAL", request.totalHarga)
+                        intent.putExtra("EXTRA_ALAMAT", request.alamatPengiriman)
+
+                        intent.putExtra("EXTRA_ID_PRODUK", pId)
+                        intent.putExtra("EXTRA_NAMA_PRODUK", pName)
+                        intent.putExtra("EXTRA_HARGA_PRODUK", pPrice)
+                        intent.putExtra("EXTRA_QTY", pQty)
+
+                        startActivity(intent)
                         finish()
                     } else {
                         Toast.makeText(this@CheckoutActivity, "Gagal: ${body?.message}", Toast.LENGTH_SHORT).show()

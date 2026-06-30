@@ -12,7 +12,7 @@ import java.util.Locale
 
 class KeranjangListAdapter(
     private val items: MutableList<Keranjang>,
-    private var showDeleteButton: Boolean = true, // Tambahkan parameter ini
+    private val showDeleteButton: Boolean = true, // Tambahan parameter baru
     private val onDeleteClick: (Keranjang) -> Unit
 ) : RecyclerView.Adapter<KeranjangListAdapter.ViewHolder>() {
 
@@ -24,8 +24,11 @@ class KeranjangListAdapter(
 
         fun bind(item: Keranjang) {
             binding.tvCartItemName.text = item.namaProduk
+
+            // Tambahkan kuantitas ke tampilan harga (misal: Rp15.000 x 2)
             binding.tvCartItemPrice.text = "${rupiah.format(item.hargaSatuan)} x ${item.jumlahBarang}"
 
+            // Logika untuk menampilkan gambar
             val imageRes = when (item.idProduk) {
                 1 -> R.drawable.sample_produk1
                 2 -> R.drawable.sample_produk2
@@ -33,10 +36,14 @@ class KeranjangListAdapter(
             }
             binding.ivCartItemImage.setImageResource(imageRes)
 
-            binding.btnHapusItem.visibility = if (showDeleteButton) View.VISIBLE else View.GONE
-
-            binding.btnHapusItem.setOnClickListener {
-                onDeleteClick(item)
+            // Logika untuk menyembunyikan tombol hapus di Detail Pesanan
+            if (showDeleteButton) {
+                binding.btnHapusItem.visibility = View.VISIBLE
+                binding.btnHapusItem.setOnClickListener {
+                    onDeleteClick(item)
+                }
+            } else {
+                binding.btnHapusItem.visibility = View.GONE
             }
         }
     }
