@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.app.lokalmarket.databinding.ActivityDetailBinding
 import com.app.lokalmarket.v1.data.local.KeranjangDbHelper
 import com.app.lokalmarket.v1.data.model.Keranjang
@@ -21,6 +23,8 @@ class DetailProdukActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        applyStatusBarPadding()
+
         dbHelper = KeranjangDbHelper(this)
 
         val productId = intent.getIntExtra("EXTRA_ID", 0)
@@ -29,14 +33,12 @@ class DetailProdukActivity : AppCompatActivity() {
         val desc = intent.getStringExtra("EXTRA_DESC") ?: "Tidak ada deskripsi tersedia"
         val imageRes = intent.getIntExtra("EXTRA_IMAGE", R.drawable.sample_produk2)
 
-
         val rupiah = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
 
         binding.tvNameDetail.text = name
         binding.tvPriceDetail.text = rupiah.format(price)
         binding.tvDeskripsiDetail.text = desc
         binding.imgDetail.setImageResource(imageRes)
-
 
         binding.toolbarDetail.setNavigationOnClickListener {
             finish()
@@ -66,6 +68,14 @@ class DetailProdukActivity : AppCompatActivity() {
             intent.putExtra("EXTRA_NAME", name)
             intent.putExtra("EXTRA_PRICE", price)
             startActivity(intent)
+        }
+    }
+
+    private fun applyStatusBarPadding() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.rootDetail) { v, insets ->
+            val statusBarInset = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            v.setPadding(v.paddingLeft, statusBarInset.top, v.paddingRight, v.paddingBottom)
+            insets
         }
     }
 }

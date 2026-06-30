@@ -3,6 +3,7 @@ package com.app.lokalmarket.v1.ui.main
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.app.lokalmarket.R
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (savedInstanceState == null) {
-            loadFragment(HomeFragment())
+            loadFragment(HomeFragment(), addToBackStack = false)
         }
 
         binding.bottomNav.setOnItemSelectedListener { item ->
@@ -30,16 +31,33 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                } else {
+                    finish()
+                }
+            }
+        })
     }
 
-    fun navigateToHome() {
-        binding.bottomNav.selectedItemId = R.id.nav_home
+    /**
+     * Dipanggil dari tombol back custom di toolbar fragment (Keranjang, Riwayat, dll).
+     * Mundur satu langkah sesuai backstack, bukan langsung ke Home.
+     */
+    fun navigateBack() {
+        onBackPressedDispatcher.onBackPressed()
     }
 
-    private fun loadFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
+    private fun loadFragment(fragment: Fragment, addToBackStack: Boolean = true) {
+        val transaction = supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
-            .commit()
+        if (addToBackStack) {
+            transaction.addToBackStack(null)
+        }
+        transaction.commit()
     }
 
     override fun onStart() {

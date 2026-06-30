@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.lokalmarket.v1.data.model.ApiResponse
@@ -34,8 +36,25 @@ class RiwayatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        applyStatusBarPadding()
+        setupToolbar()
         setupRecyclerView()
         getRiwayat()
+    }
+
+    private fun applyStatusBarPadding() {
+        val root = binding?.rootRiwayat ?: return
+        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
+            val statusBarInset = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            v.setPadding(v.paddingLeft, statusBarInset.top, v.paddingRight, v.paddingBottom)
+            insets
+        }
+    }
+
+    private fun setupToolbar() {
+        binding?.toolbarRiwayat?.setNavigationOnClickListener {
+            (activity as? MainActivity)?.navigateBack()
+        }
     }
 
     private fun setupRecyclerView() {
@@ -70,7 +89,7 @@ class RiwayatFragment : Fragment() {
             ) {
                 if (_binding == null || !isAdded) return
                 binding?.pbRiwayat?.visibility = View.GONE
-                
+
                 if (response.isSuccessful && response.body()?.success == true) {
                     val list = response.body()?.data ?: emptyList()
                     if (list.isEmpty()) {

@@ -42,20 +42,47 @@ class KeranjangDbHelper(context: Context) :
         onCreate(db)
     }
 
+    /**
+     * Jika produk dengan idProduk yang sama sudah ada di keranjang,
+     * jumlahnya akan ditambahkan ke baris yang sudah ada (bukan bikin baris baru).
+     * Kalau belum ada, baru di-insert sebagai baris baru.
+     */
     fun insertKeranjang(keranjang: Keranjang): Boolean {
         val db = this.writableDatabase
 
-        val values = ContentValues().apply {
-            put(COL_IDPRODUK, keranjang.idProduk)
-            put(COL_NAMA, keranjang.namaProduk)
-            put(COL_HARGA, keranjang.hargaSatuan)
-            put(COL_JUMLAH, keranjang.jumlahBarang)
+        val cursor = db.rawQuery(
+            "SELECT $COL_ID, $COL_JUMLAH FROM $TABLE_KERANJANG WHERE $COL_IDPRODUK = ?",
+            arrayOf(keranjang.idProduk.toString())
+        )
+
+        return if (cursor.moveToFirst()) {
+            val existingId = cursor.getInt(cursor.getColumnIndexOrThrow(COL_ID))
+            val existingJumlah = cursor.getInt(cursor.getColumnIndexOrThrow(COL_JUMLAH))
+            cursor.close()
+
+            val values = ContentValues().apply {
+                put(COL_JUMLAH, existingJumlah + keranjang.jumlahBarang)
+            }
+            val updatedRows = db.update(
+                TABLE_KERANJANG,
+                values,
+                "$COL_ID = ?",
+                arrayOf(existingId.toString())
+            )
+            db.close()
+            updatedRows > 0
+        } else {
+            cursor.close()
+            val values = ContentValues().apply {
+                put(COL_IDPRODUK, keranjang.idProduk)
+                put(COL_NAMA, keranjang.namaProduk)
+                put(COL_HARGA, keranjang.hargaSatuan)
+                put(COL_JUMLAH, keranjang.jumlahBarang)
+            }
+            val result = db.insert(TABLE_KERANJANG, null, values)
+            db.close()
+            result != -1L
         }
-
-        val result = db.insert(TABLE_KERANJANG, null, values)
-        db.close()
-
-        return result != -1L
     }
 
     fun getAllKeranjang(): List<Keranjang> {
@@ -102,7 +129,7 @@ class KeranjangDbHelper(context: Context) :
         return result > 0
     }
 
-    fun deleteKeranjang(id: Int) : Boolean {
+    fun deleteKeranjang(id: Int): Boolean {
         val db = writableDatabase
         val result = db.delete(
             TABLE_KERANJANG,

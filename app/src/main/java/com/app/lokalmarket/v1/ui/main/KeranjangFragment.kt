@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.lokalmarket.R
 import com.app.lokalmarket.databinding.FragmentKeranjangBinding
 import com.app.lokalmarket.v1.data.local.KeranjangDbHelper
 import com.app.lokalmarket.v1.ui.adapter.KeranjangListAdapter
@@ -32,17 +35,27 @@ class KeranjangFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        applyStatusBarPadding()
+
         dbHelper = KeranjangDbHelper(requireContext())
         loadKeranjang()
 
         binding.toolbarCart.setNavigationOnClickListener {
-            (activity as? MainActivity)?.navigateToHome()
+            (activity as? MainActivity)?.navigateBack()
         }
     }
 
     override fun onResume() {
         super.onResume()
         loadKeranjang()
+    }
+
+    private fun applyStatusBarPadding() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.rootKeranjang) { v, insets ->
+            val statusBarInset = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            v.setPadding(v.paddingLeft, statusBarInset.top, v.paddingRight, v.paddingBottom)
+            insets
+        }
     }
 
     private fun loadKeranjang() {
@@ -58,10 +71,27 @@ class KeranjangFragment : Fragment() {
             binding.rvCartItems.visibility = View.VISIBLE
 
             binding.rvCartItems.layoutManager = LinearLayoutManager(requireContext())
-            binding.rvCartItems.adapter = KeranjangListAdapter(items.toMutableList()) { itemYangDihapus ->
-                dbHelper.deleteKeranjang(itemYangDihapus.id)
-                loadKeranjang()
-            }
+            binding.rvCartItems.adapter = KeranjangListAdapter(
+                items = items.toMutableList(),
+                onItemClick = { itemDiklik ->
+                    val imageRes = when (itemDiklik.idProduk) {
+                        1 -> R.drawable.sample_produk1
+                        2 -> R.drawable.sample_produk2
+                        else -> R.drawable.ic_launcher_background
+                    }
+
+                    val intent = Intent(requireContext(), DetailProdukActivity::class.java)
+                    intent.putExtra("EXTRA_ID", itemDiklik.idProduk)
+                    intent.putExtra("EXTRA_NAME", itemDiklik.namaProduk)
+                    intent.putExtra("EXTRA_PRICE", itemDiklik.hargaSatuan)
+                    intent.putExtra("EXTRA_IMAGE", imageRes)
+                    startActivity(intent)
+                },
+                onDeleteClick = { itemYangDihapus ->
+                    dbHelper.deleteKeranjang(itemYangDihapus.id)
+                    loadKeranjang()
+                }
+            )
         }
 
         binding.tvTotalPrice.text = rupiah.format(totalHarga)
