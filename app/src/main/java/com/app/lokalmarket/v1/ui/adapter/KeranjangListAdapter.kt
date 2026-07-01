@@ -12,9 +12,9 @@ import java.util.Locale
 
 class KeranjangListAdapter(
     private val items: MutableList<Keranjang>,
-    private val showDeleteButton: Boolean = true,
-    private val onDeleteClick: (Keranjang) -> Unit,
-    private val onItemClick: (Keranjang) -> Unit
+    private var showDeleteButton: Boolean = true,
+    private val onItemClick: (Keranjang) -> Unit = {},
+    private val onDeleteClick: (Keranjang) -> Unit = {}
 ) : RecyclerView.Adapter<KeranjangListAdapter.ViewHolder>() {
 
     inner class ViewHolder(
@@ -25,11 +25,8 @@ class KeranjangListAdapter(
 
         fun bind(item: Keranjang) {
             binding.tvCartItemName.text = item.namaProduk
-
-            // Tambahkan kuantitas ke tampilan harga (misal: Rp15.000 x 2)
             binding.tvCartItemPrice.text = "${rupiah.format(item.hargaSatuan)} x ${item.jumlahBarang}"
 
-            // Logika untuk menampilkan gambar
             val imageRes = when (item.idProduk) {
                 1 -> R.drawable.sample_produk1
                 2 -> R.drawable.sample_produk2
@@ -37,14 +34,10 @@ class KeranjangListAdapter(
             }
             binding.ivCartItemImage.setImageResource(imageRes)
 
-            // Logika untuk menyembunyikan tombol hapus di Detail Pesanan
-            if (showDeleteButton) {
-                binding.btnHapusItem.visibility = View.VISIBLE
-                binding.btnHapusItem.setOnClickListener {
-                    onDeleteClick(item)
-                }
-            } else {
-                binding.btnHapusItem.visibility = View.GONE
+            binding.btnHapusItem.visibility = if (showDeleteButton) View.VISIBLE else View.GONE
+
+            binding.btnHapusItem.setOnClickListener {
+                onDeleteClick(item)
             }
 
             binding.root.setOnClickListener {
@@ -69,8 +62,9 @@ class KeranjangListAdapter(
     override fun getItemCount(): Int = items.size
 
     fun updateData(newItems: List<Keranjang>) {
+        val snapshot = newItems.toList()
         items.clear()
-        items.addAll(newItems)
+        items.addAll(snapshot)
         notifyDataSetChanged()
     }
 }
