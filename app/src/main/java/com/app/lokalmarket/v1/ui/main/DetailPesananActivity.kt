@@ -65,9 +65,13 @@ class DetailPesananActivity : AppCompatActivity() {
         )
 
         // Masukkan ke adapter (jadikan list berisi 1 item)
-        adapter = KeranjangListAdapter(mutableListOf(itemProduk), showDeleteButton = false) {
-            // Kosongkan karena tombol hapus tidak ada
-        }
+        adapter = KeranjangListAdapter(
+            items = mutableListOf(itemProduk),
+            showDeleteButton = false,
+            onDeleteClick = { _ -> }, // Wajib diisi (walau kosong)
+            onItemClick = { _ -> }    // Wajib diisi (walau kosong)
+        )
+
 
         binding.rvDetailItems.layoutManager = LinearLayoutManager(this)
         binding.rvDetailItems.adapter = adapter
