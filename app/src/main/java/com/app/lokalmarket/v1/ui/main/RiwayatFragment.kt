@@ -98,6 +98,10 @@ class RiwayatFragment : Fragment() {
                 call: Call<ApiResponse<List<Pesanan>>>,
                 response: Response<ApiResponse<List<Pesanan>>>
             ) {
+                // Tambahkan baris ini:
+                android.util.Log.d("DEBUG_RIWAYAT", "Response Code: ${response.code()}")
+                android.util.Log.d("DEBUG_RIWAYAT", "Response Body: ${response.body()}")
+
                 if (_binding == null || !isAdded) return
                 binding?.pbRiwayat?.visibility = View.GONE
 
