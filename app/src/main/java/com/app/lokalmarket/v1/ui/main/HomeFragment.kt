@@ -9,26 +9,32 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.lokalmarket.databinding.FragmentHomeBinding
+import com.app.lokalmarket.v1.data.model.ApiResponse
+import com.app.lokalmarket.v1.data.model.Kategori
+import com.app.lokalmarket.v1.ui.adapter.KategoriCardAdapter
 import com.app.lokalmarket.v1.data.model.Produk
+import com.app.lokalmarket.v1.data.remote.ApiClient
 import com.app.lokalmarket.v1.ui.adapter.ProdukCardAdapter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var kategoriAdapter: KategoriCardAdapter
     private lateinit var produkAdapter: ProdukCardAdapter
 
-    // Sumber data asli, tidak boleh dipakai langsung sebagai referensi adapter
-    private val dummyList = mutableListOf(
-        Produk(1, "Sepatu Anti Mainstream", "sepatu ini sangat bagus dipakai untuk menggapai mimpi yang belum tercapai", 15000000, null, 0),
-        Produk(2, "T-shirt keep going on", "baju ini sangat sejuk dipakai, penggunanya akan merasa seolah berada di surga", 250000, null, 10)
-    )
+    private var listProduk = mutableListOf<Produk>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,25 +47,78 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupRecyclerView()
+        setupProdukAdapter()
+        loadDataFromApi()
         applyStatusBarPadding()
+        setupSearch()
+        setupProfile()
+    }
 
+    private fun setupRecyclerView() {
+        kategoriAdapter = KategoriCardAdapter(mutableListOf()) { kategoriTerpilih ->
+
+            ApiClient.apiService.getProdukByKategori(kategoriTerpilih.id)
+                .enqueue(object : Callback<ApiResponse<List<Produk>>> {
+                    override fun onResponse(call: Call<ApiResponse<List<Produk>>>, response: Response<ApiResponse<List<Produk>>>) {
+                        val data = response.body()?.data
+
+                        if (response.isSuccessful && data != null) {
+                            produkAdapter.updateData(data)
+                        } else {
+                            produkAdapter.updateData(emptyList())
+                            Toast.makeText(context, "Belum ada produk di kategori ini", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ApiResponse<List<Produk>>>, t: Throwable) {
+                        Toast.makeText(context, "Gagal terhubung ke server", Toast.LENGTH_SHORT).show()
+                    }
+                })
+        }
+
+        binding.rvKategori.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = kategoriAdapter
+        }
+    }
+
+    private fun setupProdukAdapter() {
         binding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 2)
-
-        // PENTING: kirim salinan list (toMutableList), bukan referensi dummyList langsung,
-        // supaya dummyList tidak ikut berubah saat adapter melakukan clear/addAll
-        produkAdapter = ProdukCardAdapter(items = dummyList.toMutableList()) { produkTerpilih, imageRes ->
-            val intent = Intent(requireContext(), DetailProdukActivity::class.java)
-            intent.putExtra("EXTRA_ID", produkTerpilih.id)
-            intent.putExtra("EXTRA_NAME", produkTerpilih.namaProduk)
-            intent.putExtra("EXTRA_PRICE", produkTerpilih.harga)
-            intent.putExtra("EXTRA_DESC", produkTerpilih.deskripsi)
-            intent.putExtra("EXTRA_IMAGE", imageRes)
+        produkAdapter = ProdukCardAdapter(mutableListOf()) { produkTerpilih, imageRes ->
+            val intent = Intent(requireContext(), DetailProdukActivity::class.java).apply {
+                putExtra("EXTRA_ID", produkTerpilih.id)
+                putExtra("EXTRA_NAME", produkTerpilih.namaProduk)
+                putExtra("EXTRA_IMAGE_ID", imageRes)
+            }
             startActivity(intent)
         }
         binding.rvProducts.adapter = produkAdapter
+    }
 
-        setupSearch()
-        setupProfile()
+    private fun loadDataFromApi() {
+        ApiClient.apiService.getAllKategori().enqueue(object: retrofit2.Callback<ApiResponse<List<Kategori>>> {
+            override fun onResponse(call: retrofit2.Call<ApiResponse<List<Kategori>>>, response: retrofit2.Response<ApiResponse<List<Kategori>>>) {
+                if (response.isSuccessful) {
+                    response.body()?.data?.let { kategoriAdapter.updateData(it)}
+                }
+            }
+            override fun onFailure(call: retrofit2.Call<ApiResponse<List<Kategori>>>, t: Throwable) {
+                Toast.makeText(context, "Gagal mengambil data kategori", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        ApiClient.apiService.getAllProduk().enqueue(object: retrofit2.Callback<ApiResponse<List<Produk>>> {
+            override fun onResponse(call: retrofit2.Call<ApiResponse<List<Produk>>>, response: retrofit2.Response<ApiResponse<List<Produk>>>) {
+                if (response.isSuccessful) {
+                    listProduk = response.body()?.data?.toMutableList() ?: mutableListOf()
+                    produkAdapter.updateData(listProduk)
+                }
+            }
+            override fun onFailure(call: retrofit2.Call<ApiResponse<List<Produk>>>, t: Throwable) {
+                Toast.makeText(context, "Gagal mengambil produk", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun applyStatusBarPadding() {
@@ -77,9 +136,9 @@ class HomeFragment : Fragment() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val keyword = s?.toString().orEmpty().trim()
                 val filtered = if (keyword.isEmpty()) {
-                    dummyList
+                    listProduk
                 } else {
-                    dummyList.filter { it.namaProduk.contains(keyword, ignoreCase = true) }
+                    listProduk.filter { it.namaProduk.contains(keyword, ignoreCase = true) }
                 }
                 produkAdapter.updateData(filtered)
             }

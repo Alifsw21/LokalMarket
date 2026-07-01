@@ -27,4 +27,8 @@
     <string name="ringkasanPesanan">Ringkasan Pesanan</string>
     <string name="totalHarga">Total Harga:</string>
     <string name="buatPesanan">Buat Pesanan</string>
+    <string name="kategoriPakaian">Pakaian</string>
+    <string name="kategoriAlatRumahTangga">Alat Rumah Tangga</string>
+    <string name="kategoriBahanPokok">Bahan Pokok</string>
+    <string name="kategori">Kategori</string>
 </resources>

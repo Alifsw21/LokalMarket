@@ -36,6 +36,8 @@ router.get("/:id", (req, res) => {
             produk.id,
             produk.namaProduk,
             produk.harga,
+            produk.deskripsi,
+            produk.imageFileName,
             promo.diskon AS diskon,
             kategori.namaKategori AS kategori
             FROM produk
@@ -63,6 +65,38 @@ router.get("/:id", (req, res) => {
                 data: result[0]
             });
         }
+    });
+});
+
+router.get("/kategori/:id", (req, res) => {
+    const idKategori = req.params.id;
+
+    const sql = `SELECT
+            produk.id,
+            produk.idKategori,
+            produk.imageFileName,
+            produk.namaProduk,
+            produk.deskripsi,
+            produk.harga,
+            promo.diskon AS diskon
+            FROM produk
+            LEFT JOIN promo ON produk.idPromo = promo.id
+            WHERE produk.idKategori = ?`;
+
+    db.query(sql, [idKategori], (err, result) => {
+        if (err) {
+            return res.status(500).json({
+                success: false,
+                message: "Gagal mengambil data produk berdasarkan kategori"
+            });
+        }
+
+        // Mengembalikan data meskipun kosong (biar Android bisa handle)
+        return res.status(200).json({
+            success: true,
+            message: "Berhasil mengambil data produk",
+            data: result
+        });
     });
 });
 

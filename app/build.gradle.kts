@@ -35,7 +35,6 @@ dependencies {
     implementation(libs.material)
     implementation(libs.core.splashscreen)
     implementation(libs.constraintlayout)
-
     implementation(libs.lifecycle.runtime)
 
     implementation(libs.recyclerview)

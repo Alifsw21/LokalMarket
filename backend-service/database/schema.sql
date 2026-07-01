@@ -24,6 +24,7 @@ CREATE TABLE promo (
 CREATE TABLE produk (
     id INT PRIMARY KEY AUTO_INCREMENT,
     idKategori INT NOT NULL,
+    imageFileName VARCHAR(150),
     namaProduk VARCHAR(150) NOT NULL,
     deskripsi TEXT NOT NULL,
     harga INT NOT NULL,
@@ -58,7 +59,9 @@ INSERT INTO pengguna (id, nama, email, password) VALUES
 ON DUPLICATE KEY UPDATE id=id;
 
 INSERT INTO kategori (id, namaKategori) VALUES 
-(1, 'Umum')
+(1, 'Pakaian'),
+(2, 'Bahan Pokok'),
+(3, 'Alat Rumah Tangga')
 ON DUPLICATE KEY UPDATE id=id;
 
 INSERT INTO promo (id, judulPromo, statusAktif, diskon) VALUES 
@@ -66,7 +69,9 @@ INSERT INTO promo (id, judulPromo, statusAktif, diskon) VALUES
 (2, 'Promo 10%', 'Aktif', 10)
 ON DUPLICATE KEY UPDATE id=id;
 
-INSERT INTO produk (id, idKategori, namaProduk, deskripsi, harga, idPromo) VALUES 
-(1, 1, 'Sepatu Anti Mainstream', 'sepatu ini sangat bagus dipakai untuk menggapai mimpi yang belum tercapai', 15000000, 1),
-(2, 1, 'T-shirt keep going on', 'baju ini sangat sejuk dipakai, penggunanya akan merasa seolah berada di surga', 250000, 2)
+INSERT INTO produk (idKategori, imageFileName, namaProduk, deskripsi, harga, idPromo) VALUES
+(1, 'sample_produk1', 'Sepatu Anti Mainstream', 'sepatu ini sangat bagus dipakai untuk menggapai mimpi yang belum tercapai', 15000000, 1),
+(1, 'sample_produk2', 'T-shirt keep going on', 'baju ini sangat sejuk dipakai, penggunanya akan merasa seolah berada di surga', 250000, 2),
+(2, 'sample_produk3', 'Beras', 'Beras pulan kualitas terbaik', 15000, 1),
+(3, 'sample_produk4', 'Sapu', 'Sapu bersih anti debu', 25000, 1)
 ON DUPLICATE KEY UPDATE id=id;

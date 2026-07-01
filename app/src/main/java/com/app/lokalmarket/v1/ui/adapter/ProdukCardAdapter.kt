@@ -25,12 +25,26 @@ class ProdukCardAdapter(
             binding.tvProductName.text = product.namaProduk
             binding.tvPrice.text = rupiah.format(product.harga)
 
-            val imageRes = when (product.id) {
-                1 -> R.drawable.sample_produk1
-                2 -> R.drawable.sample_produk2
-                else -> R.drawable.ic_launcher_background
+            val context = binding.root.context
+            val fileName = product.imageFileName
+
+            var imageId = 0
+
+            if (!fileName.isNullOrEmpty()) {
+                val imageId = context.resources.getIdentifier(
+                    fileName,
+                    "drawable",
+                    context.packageName
+                )
+
+                if (imageId != 0) {
+                    binding.ivProductImage.setImageResource(imageId)
+                } else {
+                    binding.ivProductImage.setImageResource(R.drawable.ic_launcher_background)
+                }
+            } else {
+                binding.ivProductImage.setImageResource(R.drawable.ic_launcher_background)
             }
-            binding.ivProductImage.setImageResource(imageRes)
 
             if (product.diskon != null && product.diskon > 0) {
                 binding.tvDiscount.visibility = View.VISIBLE
@@ -40,7 +54,7 @@ class ProdukCardAdapter(
             }
 
             binding.root.setOnClickListener {
-                onItemClick(product, imageRes)
+                onItemClick(product, imageId)
             }
         }
     }
