@@ -10,12 +10,17 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", (req, res) => {
-    const id = req.params.id;
-    const sql = `SELECT dp.*, IFNULL(p.nama, CONCAT('Produk #', dp.idProduk)) as namaProduk
-                 FROM detailpesanan dp
-                 LEFT JOIN produk p ON dp.idProduk = p.id
-                 WHERE dp.idPesanan = ?`;
+router.get("/", (req, res) => {
+    const idPengguna = req.query.idPengguna;
+
+    // Gunakan filter agar hanya mengambil pesanan milik user yang sedang login
+    const sql = "SELECT * FROM pesanan WHERE idPengguna = ? ORDER BY id DESC";
+
+    db.query(sql, [idPengguna], (err, result) => {
+        if (err) return res.status(500).json({ success: false, message: "Gagal ambil data" });
+        res.status(200).json({ success: true, data: result });
+    });
+});
 
     db.query(sql, [id], (err, result) => {
         if (err) return res.status(500).json({ success: false, message: "Gagal mengambil detail" });
