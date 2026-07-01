@@ -1,11 +1,18 @@
 package com.app.lokalmarket.v1.ui.main
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.lokalmarket.databinding.ActivityDetailPesananBinding
+import com.app.lokalmarket.v1.data.model.ApiResponse
+import com.app.lokalmarket.v1.data.model.DetailPesananResponse
 import com.app.lokalmarket.v1.data.model.Keranjang
+import com.app.lokalmarket.v1.data.remote.ApiClient
 import com.app.lokalmarket.v1.ui.adapter.KeranjangListAdapter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -21,14 +28,8 @@ class DetailPesananActivity : AppCompatActivity() {
         // 1. Tangkap Data Umum Pesanan
         val idPesanan = intent.getIntExtra("EXTRA_ID_PESANAN", -1)
         val tanggal = intent.getStringExtra("EXTRA_TANGGAL") ?: "20 Mei 2024"
-        val totalHarga = intent.getIntExtra("EXTRA_TOTAL", 15000000)
+        val totalHarga = intent.getIntExtra("EXTRA_TOTAL", 0)
         val alamat = intent.getStringExtra("EXTRA_ALAMAT") ?: "Alamat tidak tersedia"
-
-        // 2. Tangkap Data Detail Produk (Intinya di sini!)
-        val idProduk = intent.getIntExtra("EXTRA_ID_PRODUK", 1) // Berguna untuk nampilin gambar
-        val namaProduk = intent.getStringExtra("EXTRA_NAMA_PRODUK") ?: "Sepatu Anti Mainstream"
-        val hargaProduk = intent.getIntExtra("EXTRA_HARGA_PRODUK", totalHarga)
-        val qty = intent.getIntExtra("EXTRA_QTY", 1)
 
         if (idPesanan == -1) {
             finish()
@@ -36,9 +37,8 @@ class DetailPesananActivity : AppCompatActivity() {
         }
 
         setupUI(idPesanan, tanggal, totalHarga, alamat)
-
-        // 3. Langsung tampilkan ke RecyclerView tanpa Web Service / API
-        tampilkanItemPesanan(idProduk, namaProduk, hargaProduk, qty)
+        setupRecyclerView()
+        ambilDetailPesanan(idPesanan)
     }
 
     private fun setupUI(id: Int, tanggal: String, total: Int, alamat: String) {
@@ -54,26 +54,41 @@ class DetailPesananActivity : AppCompatActivity() {
         }
     }
 
-    private fun tampilkanItemPesanan(idProduk: Int, nama: String, harga: Int, qty: Int) {
-        // Buat objek Keranjang bayangan (dummy) dari data Intent untuk dikirim ke Adapter
-        val itemProduk = Keranjang(
-            id = 0,
-            idProduk = idProduk,
-            namaProduk = nama,
-            hargaSatuan = harga,
-            jumlahBarang = qty
-        )
-
-        // Masukkan ke adapter (jadikan list berisi 1 item)
+    private fun setupRecyclerView() {
         adapter = KeranjangListAdapter(
-            items = mutableListOf(itemProduk),
-            showDeleteButton = false,
-            onDeleteClick = { _ -> }, // Wajib diisi (walau kosong)
-            onItemClick = { _ -> }    // Wajib diisi (walau kosong)
+            items = mutableListOf(),
+            showDeleteButton = false
         )
-
-
         binding.rvDetailItems.layoutManager = LinearLayoutManager(this)
         binding.rvDetailItems.adapter = adapter
+    }
+
+    private fun ambilDetailPesanan(idPesanan: Int) {
+        ApiClient.apiService.getDetailPesanan(idPesanan).enqueue(object : Callback<ApiResponse<List<DetailPesananResponse>>> {
+            override fun onResponse(
+                call: Call<ApiResponse<List<DetailPesananResponse>>>,
+                response: Response<ApiResponse<List<DetailPesananResponse>>>
+            ) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val detailList = response.body()?.data ?: emptyList()
+                    val items = detailList.map { detail ->
+                        Keranjang(
+                            id = detail.id ?: 0,
+                            idProduk = detail.idProduk ?: 0,
+                            namaProduk = detail.namaProduk ?: "Produk",
+                            hargaSatuan = detail.hargaSatuan ?: 0,
+                            jumlahBarang = detail.jumlahBarang ?: 1
+                        )
+                    }
+                    adapter.updateData(items)
+                } else {
+                    Toast.makeText(this@DetailPesananActivity, "Gagal memuat detail pesanan", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<List<DetailPesananResponse>>>, t: Throwable) {
+                Toast.makeText(this@DetailPesananActivity, "Koneksi gagal: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
