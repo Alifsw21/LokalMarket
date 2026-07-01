@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.lokalmarket.databinding.ActivityCheckoutBinding
 import com.app.lokalmarket.v1.data.local.KeranjangDbHelper
@@ -22,6 +24,8 @@ class CheckoutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        applyStatusBarPadding()
 
         dbHelper = KeranjangDbHelper(this)
 
@@ -56,12 +60,12 @@ class CheckoutActivity : AppCompatActivity() {
             items = items.toMutableList(),
             showDeleteButton = false
         ) {
-            // onItemClick (optional)
+            // onItemClick tidak diperlukan di halaman checkout
         }
 
         binding.btnPay.setOnClickListener {
             kirimBroadcastPesanan(buyerName ?: "Pembeli")
-            
+
             if (isFromCart) {
                 Toast.makeText(this, "Pesanan untuk $buyerName berhasil dibuat!", Toast.LENGTH_LONG).show()
                 dbHelper.clearKeranjang()
@@ -74,6 +78,14 @@ class CheckoutActivity : AppCompatActivity() {
 
         binding.toolbarCheckout.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
+        }
+    }
+
+    private fun applyStatusBarPadding() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.rootCheckout) { v, insets ->
+            val statusBarInset = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            v.setPadding(v.paddingLeft, statusBarInset.top, v.paddingRight, v.paddingBottom)
+            insets
         }
     }
 
