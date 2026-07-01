@@ -82,7 +82,18 @@ class RiwayatFragment : Fragment() {
         binding?.pbRiwayat?.visibility = View.VISIBLE
         binding?.tvEmptyRiwayat?.visibility = View.GONE
 
-        ApiClient.apiService.getRiwayatPesanan().enqueue(object : Callback<ApiResponse<List<Pesanan>>> {
+        // Pastikan nama file "UserSession" SAMA PERSIS dengan di LoginActivity
+        val sharedPref = requireContext().getSharedPreferences("UserSession", android.content.Context.MODE_PRIVATE)
+        val idPengguna = sharedPref.getInt("USER_ID", -1)
+
+        if (idPengguna == -1) {
+            binding?.pbRiwayat?.visibility = View.GONE
+            Toast.makeText(context, "Sesi habis, silakan login kembali", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Panggil API dengan menyertakan ID
+        ApiClient.apiService.getRiwayatPesanan(idPengguna).enqueue(object : Callback<ApiResponse<List<Pesanan>>> {
             override fun onResponse(
                 call: Call<ApiResponse<List<Pesanan>>>,
                 response: Response<ApiResponse<List<Pesanan>>>

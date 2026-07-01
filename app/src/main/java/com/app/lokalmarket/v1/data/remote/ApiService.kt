@@ -55,7 +55,7 @@ interface ApiService {
     ): Call<ApiResponse<Any>>
 
     @GET("pesanan")
-    fun getRiwayatPesanan(): Call<ApiResponse<List<Pesanan>>>
+    fun getRiwayatPesanan(@Query("idPengguna") idPengguna: Int): Call<ApiResponse<List<Pesanan>>>
 
     @DELETE("pesanan/{id}")
     fun hapusPesanan(
