@@ -1,10 +1,10 @@
 package com.app.lokalmarket.v1.data.model
 
-data class Pesanan (
+data class Pesanan(
     val id: Int,
-    val idPengguna: Int,
     val tanggalPesanan: String,
-    val totalHarga: Int,
     val alamat: String,
-    val statusPesanan: String
+    val totalHarga: Int,
+    val idProduk: Int? = 1,
+    val namaProduk: String? = "Produk Lokal"
 )
