@@ -50,9 +50,12 @@ class CheckoutActivity : AppCompatActivity() {
             binding.rvCheckoutItems.layoutManager = LinearLayoutManager(this)
 
             // Mengirim showDeleteButton = false agar tidak bisa menghapus item di halaman checkout
-            binding.rvCheckoutItems.adapter = KeranjangListAdapter(items.toMutableList(), showDeleteButton = false) {
-                // Kosongkan karena tidak ada aksi hapus
-            }
+            binding.rvCheckoutItems.adapter = KeranjangListAdapter(
+                items.toMutableList(),          // Parameter 1: list item
+                showDeleteButton = false,       // Parameter 2: sembunyikan tombol hapus
+                onDeleteClick = { _ -> },       // Parameter 3: aksi klik hapus (kosongkan)
+                onItemClick = { _ -> }          // Parameter 4: aksi klik item (kosongkan)
+            )
 
             binding.btnPay.setOnClickListener {
                 if (userId == -1) {

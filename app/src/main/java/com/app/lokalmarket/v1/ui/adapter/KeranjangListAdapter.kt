@@ -12,8 +12,9 @@ import java.util.Locale
 
 class KeranjangListAdapter(
     private val items: MutableList<Keranjang>,
-    private val showDeleteButton: Boolean = true, // Tambahan parameter baru
-    private val onDeleteClick: (Keranjang) -> Unit
+    private val showDeleteButton: Boolean = true,
+    private val onDeleteClick: (Keranjang) -> Unit,
+    private val onItemClick: (Keranjang) -> Unit
 ) : RecyclerView.Adapter<KeranjangListAdapter.ViewHolder>() {
 
     inner class ViewHolder(
