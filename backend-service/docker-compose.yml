@@ -12,10 +12,10 @@ services:
     volumes:
       - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend_service:
     build: .
@@ -23,7 +23,6 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
-
     volumes:
       - .:/app
       - /app/node_modules
@@ -31,8 +30,8 @@ services:
       - .env
     environment:
       - DB_HOST=${DB_HOST}
-      - DB_USER=${DB_USER}
       - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
       - DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - DB_NAME=${MYSQL_DATABASE}
     depends_on:
