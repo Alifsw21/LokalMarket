@@ -58,23 +58,38 @@ class HomeFragment : Fragment() {
     private fun setupRecyclerView() {
         kategoriAdapter = KategoriCardAdapter(mutableListOf()) { kategoriTerpilih ->
 
-            ApiClient.apiService.getProdukByKategori(kategoriTerpilih.id)
-                .enqueue(object : Callback<ApiResponse<List<Produk>>> {
-                    override fun onResponse(call: Call<ApiResponse<List<Produk>>>, response: Response<ApiResponse<List<Produk>>>) {
-                        val data = response.body()?.data
+            if (kategoriTerpilih.id == -1) {
+                produkAdapter.updateData(listProduk)
+            } else {
+                ApiClient.apiService.getProdukByKategori(kategoriTerpilih.id)
+                    .enqueue(object : Callback<ApiResponse<List<Produk>>> {
+                        override fun onResponse(
+                            call: Call<ApiResponse<List<Produk>>>,
+                            response: Response<ApiResponse<List<Produk>>>
+                        ) {
+                            val data = response.body()?.data
 
-                        if (response.isSuccessful && data != null) {
-                            produkAdapter.updateData(data)
-                        } else {
-                            produkAdapter.updateData(emptyList())
-                            Toast.makeText(context, "Belum ada produk di kategori ini", Toast.LENGTH_SHORT).show()
+                            if (response.isSuccessful && data != null) {
+                                produkAdapter.updateData(data)
+                            } else {
+                                produkAdapter.updateData(emptyList())
+                                Toast.makeText(
+                                    context,
+                                    "Belum ada produk di kategori ini",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
-                    }
 
-                    override fun onFailure(call: Call<ApiResponse<List<Produk>>>, t: Throwable) {
-                        Toast.makeText(context, "Gagal terhubung ke server", Toast.LENGTH_SHORT).show()
-                    }
-                })
+                        override fun onFailure(
+                            call: Call<ApiResponse<List<Produk>>>,
+                            t: Throwable
+                        ) {
+                            Toast.makeText(context, "Gagal terhubung ke server", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    })
+            }
         }
 
         binding.rvKategori.apply {
@@ -100,7 +115,13 @@ class HomeFragment : Fragment() {
         ApiClient.apiService.getAllKategori().enqueue(object: retrofit2.Callback<ApiResponse<List<Kategori>>> {
             override fun onResponse(call: retrofit2.Call<ApiResponse<List<Kategori>>>, response: retrofit2.Response<ApiResponse<List<Kategori>>>) {
                 if (response.isSuccessful) {
-                    response.body()?.data?.let { kategoriAdapter.updateData(it)}
+                    val kategoriDariApi = response.body()?.data ?: emptyList()
+
+                    val listKategoriLengkap = mutableListOf<Kategori>()
+                    listKategoriLengkap.add(Kategori(-1, "Semua"))
+                    listKategoriLengkap.addAll(kategoriDariApi)
+
+                    kategoriAdapter.updateData(listKategoriLengkap)
                 }
             }
             override fun onFailure(call: retrofit2.Call<ApiResponse<List<Kategori>>>, t: Throwable) {
