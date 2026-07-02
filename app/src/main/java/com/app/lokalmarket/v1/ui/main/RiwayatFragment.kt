@@ -1,7 +1,9 @@
 package com.app.lokalmarket.v1.ui.main
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,7 +72,8 @@ class RiwayatFragment : Fragment() {
                 startActivity(intent)
             },
             onDeleteClick = { pesanan ->
-                hapusPesanan(pesanan)
+                // Panggil fungsi konfirmasi hapus
+                tampilkanDialogHapus(pesanan)
             }
         )
         binding?.rvRiwayat?.layoutManager = LinearLayoutManager(requireContext())
@@ -82,7 +85,6 @@ class RiwayatFragment : Fragment() {
         binding?.pbRiwayat?.visibility = View.VISIBLE
         binding?.tvEmptyRiwayat?.visibility = View.GONE
 
-        // Pastikan nama file "UserSession" SAMA PERSIS dengan di LoginActivity
         val sharedPref = requireContext().getSharedPreferences("UserSession", android.content.Context.MODE_PRIVATE)
         val idPengguna = sharedPref.getInt("USER_ID", -1)
 
@@ -92,16 +94,11 @@ class RiwayatFragment : Fragment() {
             return
         }
 
-        // Panggil API dengan menyertakan ID
         ApiClient.apiService.getRiwayatPesanan(idPengguna).enqueue(object : Callback<ApiResponse<List<Pesanan>>> {
             override fun onResponse(
                 call: Call<ApiResponse<List<Pesanan>>>,
                 response: Response<ApiResponse<List<Pesanan>>>
             ) {
-                // Tambahkan baris ini:
-                android.util.Log.d("DEBUG_RIWAYAT", "Response Code: ${response.code()}")
-                android.util.Log.d("DEBUG_RIWAYAT", "Response Body: ${response.body()}")
-
                 if (_binding == null || !isAdded) return
                 binding?.pbRiwayat?.visibility = View.GONE
 
@@ -125,22 +122,47 @@ class RiwayatFragment : Fragment() {
         })
     }
 
-    private fun hapusPesanan(pesanan: Pesanan) {
+    private fun tampilkanDialogHapus(pesanan: Pesanan) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Hapus Riwayat")
+            .setMessage("Apakah Anda yakin ingin menghapus pesanan ${pesanan.id} dari riwayat?")
+            .setPositiveButton("Hapus") { dialog, _ ->
+                eksekusiHapusPesanan(pesanan)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Batal") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    private fun eksekusiHapusPesanan(pesanan: Pesanan) {
+        if (_binding == null) return
+        binding?.pbRiwayat?.visibility = View.VISIBLE
+
         ApiClient.apiService.hapusPesanan(pesanan.id).enqueue(object : Callback<ApiResponse<Any>> {
             override fun onResponse(call: Call<ApiResponse<Any>>, response: Response<ApiResponse<Any>>) {
+                if (_binding == null || !isAdded) return
+                binding?.pbRiwayat?.visibility = View.GONE
+
                 if (response.isSuccessful && response.body()?.success == true) {
                     Toast.makeText(requireContext(), "Pesanan #${pesanan.id} berhasil dihapus", Toast.LENGTH_SHORT).show()
+
                     adapter.removeItem(pesanan)
+
                     if (adapter.itemCount == 0) {
                         binding?.tvEmptyRiwayat?.visibility = View.VISIBLE
                     }
                 } else {
-                    Toast.makeText(requireContext(), "Gagal menghapus pesanan", Toast.LENGTH_SHORT).show()
+                    Log.e("HapusPesanan", "Gagal menghapus: Code ${response.code()} Body: ${response.errorBody()?.string()}")
+                    Toast.makeText(requireContext(), "Gagal menghapus pesanan dari server", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ApiResponse<Any>>, t: Throwable) {
-                Toast.makeText(requireContext(), "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                if (_binding == null || !isAdded) return
+                binding?.pbRiwayat?.visibility = View.GONE
+                Toast.makeText(requireContext(), "Koneksi Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }

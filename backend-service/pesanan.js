@@ -58,10 +58,19 @@ router.post("/", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-    const id = req.params.id;
-    db.query("DELETE FROM pesanan WHERE id = ?", [id], (err) => {
-        if (err) return res.status(500).json({ success: false });
-        res.status(200).json({ success: true, message: "Terhapus" });
+    const idPesanan = req.params.id;
+
+    const sqlDeleteDetail = "DELETE FROM detailpesanan WHERE idPesanan = ?";
+
+    db.query(sqlDeleteDetail, [idPesanan], (err) => {
+        if (err) return res.status(500).json({ success: false, message: "Gagal menghapus detail" });
+
+        const sqlDeletePesanan = "DELETE FROM pesanan WHERE id = ?";
+        db.query(sqlDeletePesanan, [idPesanan], (err) => {
+            if (err) return res.status(500).json({ success: false, message: "Gagal menghapus pesanan" });
+
+            res.status(200).json({ success: true, message: "Pesanan berhasil dihapus"});
+        });
     });
 });
 

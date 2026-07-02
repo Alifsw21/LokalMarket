@@ -49,7 +49,7 @@ CREATE TABLE detailpesanan (
     idProduk INT NOT NULL,
     jumlahBarang INT NOT NULL,
     hargaSatuan INT NOT NULL,
-    FOREIGN KEY (idPesanan) REFERENCES pesanan(id),
+    FOREIGN KEY (idPesanan) REFERENCES pesanan(id) ON DELETE CASCADE,
     FOREIGN KEY (idProduk) REFERENCES produk(id)
 );
 
