@@ -27,12 +27,17 @@ class KeranjangListAdapter(
             binding.tvCartItemName.text = item.namaProduk
             binding.tvCartItemPrice.text = "${rupiah.format(item.hargaSatuan)} x ${item.jumlahBarang}"
 
-            val imageRes = when (item.idProduk) {
-                1 -> R.drawable.sample_produk1
-                2 -> R.drawable.sample_produk2
-                else -> R.drawable.ic_launcher_background
+            val context = binding.root.context
+            val imageRes = context.resources.getIdentifier(
+                "sample_produk${item.idProduk}",
+                "drawable",
+                context.packageName
+            )
+            if (imageRes != 0) {
+                binding.ivCartItemImage.setImageResource(imageRes)
+            } else {
+                binding.ivCartItemImage.setImageResource(R.drawable.ic_launcher_background)
             }
-            binding.ivCartItemImage.setImageResource(imageRes)
 
             binding.btnHapusItem.visibility = if (showDeleteButton) View.VISIBLE else View.GONE
 

@@ -75,11 +75,12 @@ class KeranjangFragment : Fragment() {
                 items = items.toMutableList(),
                 showDeleteButton = true,
                 onItemClick = { itemDiklik ->
-                    val imageRes = when (itemDiklik.idProduk) {
-                        1 -> R.drawable.sample_produk1
-                        2 -> R.drawable.sample_produk2
-                        else -> R.drawable.ic_launcher_background
-                    }
+                    val context = requireContext()
+                    val imageRes = context.resources.getIdentifier(
+                        "sample_produk${itemDiklik.idProduk}",
+                        "drawable",
+                        context.packageName
+                    ).let { if (it != 0) it else R.drawable.ic_launcher_background }
                     val intent = Intent(requireContext(), DetailProdukActivity::class.java)
                     intent.putExtra("EXTRA_ID", itemDiklik.idProduk)
                     intent.putExtra("EXTRA_NAME", itemDiklik.namaProduk)

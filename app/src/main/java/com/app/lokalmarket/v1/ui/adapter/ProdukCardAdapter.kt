@@ -31,7 +31,7 @@ class ProdukCardAdapter(
             var imageId = 0
 
             if (!fileName.isNullOrEmpty()) {
-                val imageId = context.resources.getIdentifier(
+                imageId = context.resources.getIdentifier(
                     fileName,
                     "drawable",
                     context.packageName

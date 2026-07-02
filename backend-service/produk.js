@@ -7,6 +7,7 @@ router.get("/", (req, res) => {
         produk.id,
         produk.namaProduk,
         produk.harga,
+        produk.imageFileName,
         promo.diskon AS diskon,
         kategori.namaKategori AS kategori
         FROM produk
