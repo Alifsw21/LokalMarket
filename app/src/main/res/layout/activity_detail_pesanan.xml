@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_keranjang_list" />
+                tools:listitem="@layout/item_keranjang" />
 
             <View
                 android:layout_width="match_parent"
