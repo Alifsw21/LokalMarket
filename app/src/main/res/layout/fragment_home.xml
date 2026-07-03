@@ -42,7 +42,7 @@
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 android:background="@android:color/transparent"
-                android:hint="Cari produk..."
+                android:hint="@string/search"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:maxLines="1"
@@ -61,7 +61,7 @@
         android:background="@drawable/bg_circle_profile"
         android:padding="8dp"
         android:src="@drawable/ic_person"
-        android:contentDescription="Akun pengguna"
+        android:contentDescription="@string/profile"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

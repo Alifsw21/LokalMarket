@@ -35,7 +35,7 @@
                 android:id="@+id/tv_cart_empty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Keranjang kamu masih kosong"
+                android:text="@string/cartEmpty"
                 android:textColor="#999999"
                 android:textSize="14sp"
                 android:gravity="center"
@@ -71,7 +71,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Harga:"
+                android:text="@string/totalHarga"
                 android:textSize="12sp"
                 android:textColor="#777777" />
 
@@ -90,7 +90,7 @@
             android:id="@+id/btn_checkout_from_cart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Checkout"
+            android:text="@string/checkoutFromCart"
             android:textColor="@android:color/white"
             android:textAllCaps="false"
             app:backgroundTint="#FF9800"

@@ -117,7 +117,7 @@
             android:layout_height="56dp"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:text="+ Keranjang"
+            android:text="@string/tambahKeranjang"
             android:textAllCaps="false"
             android:textSize="14sp"
             android:textStyle="bold"
