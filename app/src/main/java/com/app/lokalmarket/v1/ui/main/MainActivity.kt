@@ -43,10 +43,6 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    /**
-     * Dipanggil dari tombol back custom di toolbar fragment (Keranjang, Riwayat, dll).
-     * Mundur satu langkah sesuai backstack, bukan langsung ke Home.
-     */
     fun navigateBack() {
         onBackPressedDispatcher.onBackPressed()
     }

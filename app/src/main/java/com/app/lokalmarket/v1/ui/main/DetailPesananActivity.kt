@@ -25,7 +25,6 @@ class DetailPesananActivity : AppCompatActivity() {
         binding = ActivityDetailPesananBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1. Tangkap Data Umum Pesanan
         val idPesanan = intent.getIntExtra("EXTRA_ID_PESANAN", -1)
         val tanggal = intent.getStringExtra("EXTRA_TANGGAL") ?: "20 Mei 2024"
         val totalHarga = intent.getIntExtra("EXTRA_TOTAL", 0)
