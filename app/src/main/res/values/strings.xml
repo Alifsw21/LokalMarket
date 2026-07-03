@@ -16,7 +16,7 @@
     <string name="productimg">Gambar Produk</string>
     <string name="nameProduct">Nama Produk</string>
     <string name="price">Rp. 500.000</string>
-    <string name="discount">Diskon 10%</string>
+    <string name="discount">Diskon 0%</string>
     <string name="seeMore">Lihat Selengkapnya</string>
     <string name="description">Deskripsi Produk:</string>
     <string name="descriptionContent">Ini adalah deskripsi lengkap produk lokal berkualitas tinggi yang tersedia di LokalMarket.</string>
@@ -31,4 +31,23 @@
     <string name="kategoriAlatRumahTangga">Alat Rumah Tangga</string>
     <string name="kategoriBahanPokok">Bahan Pokok</string>
     <string name="kategori">Kategori</string>
+    <string name="tambahKeranjang">+ Keranjang</string>
+    <string name="pesanan">Pesanan #001</string>
+    <string name="tanggal">20 Mei 2024</string>
+    <string name="itemPesanan">Item Pesanan</string>
+    <string name="informasiPengiriman">Informasi Pengiriman</string>
+    <string name="detailAlamat">Alamat lengkap pengiriman…</string>
+    <string name="totalPembayaran">Total Pembayaran</string>
+    <string name="detailTotalHarga">Rp 0</string>
+    <string name="search">Cari produk…</string>
+    <string name="profile">Akun pengguna</string>
+    <string name="checkoutFromCart">Checkout</string>
+    <string name="cartEmpty">Keranjang kamu masih kosong</string>
+    <string name="emptyRiwayat">Belum ada riwayat pesanan</string>
+    <string name="hapusItem">Hapus Item</string>
+    <string name="tanggalName">Tanggal</string>
+    <string name="hapus">Hapus</string>
+    <string name="userID">User ID</string>
+    <string name="judulPromo">Judul Promo Disini</string>
+    <string name="aktif">Aktif</string>
 </resources>
