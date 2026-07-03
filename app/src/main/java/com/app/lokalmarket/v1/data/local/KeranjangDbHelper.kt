@@ -42,11 +42,6 @@ class KeranjangDbHelper(context: Context) :
         onCreate(db)
     }
 
-    /**
-     * Jika produk dengan idProduk yang sama sudah ada di keranjang,
-     * jumlahnya akan ditambahkan ke baris yang sudah ada (bukan bikin baris baru).
-     * Kalau belum ada, baru di-insert sebagai baris baru.
-     */
     fun insertKeranjang(keranjang: Keranjang): Boolean {
         val db = this.writableDatabase
 

@@ -72,7 +72,6 @@ class RiwayatFragment : Fragment() {
                 startActivity(intent)
             },
             onDeleteClick = { pesanan ->
-                // Panggil fungsi konfirmasi hapus
                 tampilkanDialogHapus(pesanan)
             }
         )

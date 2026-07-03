@@ -6,7 +6,7 @@ data class Pengguna (
     @SerializedName("id")
     val id: Int,
     
-    @SerializedName("nama") // Pastikan ini sesuai dengan kolom di database/JSON backend
+    @SerializedName("nama")
     val nama: String?,
     
     @SerializedName("email")

@@ -68,7 +68,6 @@ class CheckoutActivity : AppCompatActivity() {
         binding.rvCheckoutItems.adapter = KeranjangListAdapter(
             items = items.toMutableList(),
             showDeleteButton = false
-            // onItemClick dan onDeleteClick pakai default {} karena tidak diperlukan di checkout
         )
 
         binding.btnPay.setOnClickListener {
